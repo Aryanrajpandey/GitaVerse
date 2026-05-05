@@ -51,6 +51,8 @@ const SITUATION_MAP = {
 // GZIP COMPRESSION (reduces transfer size 60-80%)
 // ============================================================
 app.use((req, res, next) => {
+  if (process.env.VERCEL) return next(); // Vercel handles compression automatically
+  
   const ae = req.headers['accept-encoding'] || '';
   if (!ae.includes('gzip')) return next();
 

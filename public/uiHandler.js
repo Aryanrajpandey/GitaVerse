@@ -34,27 +34,6 @@ export function renderChapterList(chapters, chapterListEl, chaptersLoadingEl, on
   });
 }
 
-// ── Dropdown (mobile) ─────────────────────────────────────────
-export function renderDropdown(chapters, dropdownMenuEl, onSelectChapter) {
-  dropdownMenuEl.innerHTML = '';
-  chapters.forEach(ch => {
-    const item = document.createElement('div');
-    item.className       = 'dropdown-item';
-    item.dataset.chapter = ch.chapter_number;
-    item.innerHTML = `
-      <span class="dropdown-item-num">${String(ch.chapter_number).padStart(2, '0')}</span>
-      <div>
-        <div class="dropdown-item-name">${ch.name || ''}</div>
-        <div class="dropdown-item-en">${ch.translation || ch.meaning?.en || ''}</div>
-      </div>
-    `;
-    item.addEventListener('click', () => {
-      onSelectChapter(ch.chapter_number);
-      dropdownMenuEl.classList.remove('open');
-    });
-    dropdownMenuEl.appendChild(item);
-  });
-}
 
 // ── Chapter header ────────────────────────────────────────────
 export function renderChapterHeader(chapter, els) {
@@ -90,37 +69,39 @@ export function renderSkeletons(count, container) {
   container.appendChild(fragment);
 }
 
-// ── Virtualized Verse List ─────────────────────────────────────
-let virtualState = {
-  verses: [],
-  container: null,
-  chapterNum: 0,
-  itemHeight: 350, // Average height of a verse card
-  buffer: 3,       // Number of items to render above/below viewport
-  visibleIndices: { start: 0, end: 0 }
-};
+// ── Verses Rendering (Native Flow) ──────────────────────────────
 
 export function renderVerses(verses, versesListEl, chapterNum) {
-  virtualState = {
-    verses,
-    container: versesListEl,
-    chapterNum,
-    itemHeight: 350,
-    buffer: 5,
-    visibleIndices: { start: -1, end: -1 }
-  };
-
   versesListEl.innerHTML = '';
-  // Total height spacer
-  const totalHeight = verses.length * virtualState.itemHeight;
-  versesListEl.style.height = `${totalHeight}px`;
+  versesListEl.style.height = 'auto'; // Reset any fixed heights
   versesListEl.style.position = 'relative';
 
+  // Remove any stale virtual scroll listeners if they exist from before
   const scrollParent = versesListEl.parentElement;
-  scrollParent.removeEventListener('scroll', handleVirtualScroll);
-  scrollParent.addEventListener('scroll', handleVirtualScroll, { passive: true });
+  if (scrollParent) {
+    // Just in case, try removing it (even though it's removed below)
+    scrollParent.onscroll = null;
+  }
 
-  updateVirtualDisplay();
+  const fragment = document.createDocumentFragment();
+  verses.forEach((verse, i) => {
+    const card = document.createElement('div');
+    card.className = 'verse-card';
+    card.dataset.index = i;
+    card.id = `verse-${verse.verse}`;
+    // No absolute positioning. Rely on CSS flex/margin flow.
+    populateVerseCard(card, verse, chapterNum, verses);
+
+    // Audio pre-warming (run asynchronously so it doesn't block rendering)
+    setTimeout(() => {
+      const text = card.querySelector('.verse-sanskrit')?.innerText || card.querySelector('.slok')?.innerText;
+      if (text) import('./apiHandler.js').then(m => m.preloadAudio(text));
+    }, 100 * i); // Stagger preloads slightly
+    
+    fragment.appendChild(card);
+  });
+
+  versesListEl.appendChild(fragment);
 
   // Attach event delegation for play buttons ONCE
   if (!versesListEl.dataset.listenersBound) {
@@ -133,7 +114,7 @@ export function renderVerses(verses, versesListEl, chapterNum) {
           togglePause(verseNum);
         } else {
           stopAllAudio();
-          play(verseNum, virtualState.verses);
+          play(verseNum, verses);
         }
         return;
       }
@@ -172,7 +153,7 @@ export function renderVerses(verses, versesListEl, chapterNum) {
         const playing  = getCurrentPlayingVerse();
         if (playing === verseNum) {
           stopAllAudio();
-          play(verseNum, virtualState.verses);
+          play(verseNum, verses);
         }
       }
     });
@@ -181,58 +162,6 @@ export function renderVerses(verses, versesListEl, chapterNum) {
   }
 }
 
-function handleVirtualScroll(e) {
-  requestAnimationFrame(updateVirtualDisplay);
-}
-
-function updateVirtualDisplay() {
-  const { verses, container, itemHeight, buffer } = virtualState;
-  if (!container) return;
-
-  const scrollParent = container.parentElement;
-  const scrollTop    = scrollParent.scrollTop;
-  const viewportH    = scrollParent.clientHeight;
-
-  const startIdx = Math.max(0, Math.floor(scrollTop / itemHeight) - buffer);
-  const endIdx   = Math.min(verses.length - 1, Math.ceil((scrollTop + viewportH) / itemHeight) + buffer);
-
-  if (startIdx === virtualState.visibleIndices.start && endIdx === virtualState.visibleIndices.end) return;
-  virtualState.visibleIndices = { start: startIdx, end: endIdx };
-
-  // Re-render only the range
-  const fragment = document.createDocumentFragment();
-  for (let i = startIdx; i <= endIdx; i++) {
-    const verse = verses[i];
-    let card = container.querySelector(`[data-index="${i}"]`);
-    
-    if (!card) {
-      card = document.createElement('div');
-      card.className = 'verse-card';
-      card.dataset.index = i;
-      card.id = `verse-${verse.verse}`;
-      card.style.position = 'absolute';
-      card.style.top = `${i * itemHeight}px`;
-      card.style.width = '100%';
-      populateVerseCard(card, verse, virtualState.chapterNum, verses);
-      
-      // Audio pre-warming
-      const text = card.querySelector('.verse-sanskrit')?.innerText || card.querySelector('.slok')?.innerText;
-      if (text) import('./apiHandler.js').then(m => m.preloadAudio(text));
-    }
-    fragment.appendChild(card);
-  }
-
-  // Clear nodes outside buffer
-  const existingCards = container.querySelectorAll('.verse-card');
-  existingCards.forEach(c => {
-    const idx = parseInt(c.dataset.index);
-    if (idx < startIdx || idx > endIdx) container.removeChild(c);
-  });
-
-  container.appendChild(fragment);
-}
-
-// (Event listeners were moved inside renderVerses)
 
 // ── Populate a single verse card ──────────────────────────────
 function populateVerseCard(card, verse, chapterNum, verses_ref) {

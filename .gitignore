@@ -2,3 +2,4 @@ node_modules/
 audio-cache/
 data/
 .env
+.vercel

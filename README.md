@@ -23,7 +23,8 @@
 ## ✨ Features
 
 - 🌌 **Cinematic Experience**: Immersive Three.js dynamic backgrounds and GSAP scroll animations.
-- 📖 **Complete 700 Verses Library**: Fast, virtualized browsing of all 18 chapters with Sanskrit, transliteration, and 15+ commentaries.
+- 📖 **Complete 700 Verses Library**: Instantaneous native rendering of all 18 chapters with Sanskrit, transliteration, and 15+ commentaries.
+- 📱 **Mobile-First App Experience**: Features sleek horizontal swipe chapter navigation, strict touch target optimization (iOS HIG compliant), and fully responsive CSS layouts.
 - 🤖 **Saarathi AI Companion**: Context-aware AI chatbot built to guide you through the philosophy of the Gita.
 - 🎧 **Native-Quality Audio**: Listen to Sanskrit chants natively via Web Speech API or High-Quality TTS (ElevenLabs/Google).
 - ⚡ **Production-Grade Performance**: Custom LRU caching, response chunking, gzip compression, and instantaneous SPA navigation.

@@ -8,7 +8,7 @@ import {
   setPlayerState, play, getAutoPlayNext, getRepeatToggle, setAutoPlayNext, setRepeatToggle,
 } from './audioHandler.js';
 import {
-  renderChapterList, renderDropdown, renderChapterHeader,
+  renderChapterList, renderChapterHeader,
   renderSkeletons, renderVerses,
 } from './uiHandler.js';
 import {
@@ -47,7 +47,6 @@ export async function init() {
     if (dom.chaptersLoading) dom.chaptersLoading.style.display = 'none';
     
     renderChapterList(chapters, dom.chapterList, dom.chaptersLoading, selectChapter);
-    renderDropdown(chapters, dom.dropdownMenu, selectChapter);
     
     handleHashNavigation();
   } catch (err) {
@@ -73,9 +72,6 @@ function queryDOM() {
     errorState:       document.getElementById('error-state'),
     errorMessage:     document.getElementById('error-message'),
     retryBtn:         document.getElementById('retry-btn'),
-    dropdownBtn:      document.getElementById('chapter-dropdown-btn'),
-    dropdownLabel:    document.getElementById('dropdown-label'),
-    dropdownMenu:     document.getElementById('chapter-dropdown'),
     meditationToggle: document.getElementById('meditation-toggle'),
     autoPlayBtn:      document.getElementById('autoplay-toggle'),
     repeatBtn:        document.getElementById('repeat-toggle'),
@@ -145,6 +141,7 @@ async function selectChapter(chNum, force = false) {
     if (requestId !== activeRequestId) return;
     if (dom.versesLoading) dom.versesLoading.style.display = 'none';
     if (dom.errorState) dom.errorState.style.display = 'flex';
+    currentChapter = null; // Allow user to tap the same chapter again to retry
     lastRetryAction = () => selectChapter(chNum, true);
   }
 }
@@ -170,11 +167,6 @@ function showStreakBadge(badge) {
 }
 
 function setupViewListeners(dom) {
-  dom.dropdownBtn?.addEventListener('click', e => {
-    e.stopPropagation();
-    dom.dropdownMenu?.classList.toggle('open');
-  });
-
   dom.meditationToggle?.addEventListener('click', () => {
     document.body.classList.toggle('meditation-mode');
   });

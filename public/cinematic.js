@@ -64,11 +64,11 @@
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const i3 = i * 3;
     // Spread particles across a wide area
-    positions[i3]     = (Math.random() - 0.5) * 30;
+    positions[i3] = (Math.random() - 0.5) * 30;
     positions[i3 + 1] = (Math.random() - 0.5) * 30;
     positions[i3 + 2] = (Math.random() - 0.5) * 20 - 2;
     // Slow random drift
-    velocities[i3]     = (Math.random() - 0.5) * 0.003;
+    velocities[i3] = (Math.random() - 0.5) * 0.003;
     velocities[i3 + 1] = (Math.random() - 0.5) * 0.003;
     velocities[i3 + 2] = (Math.random() - 0.5) * 0.001;
     // Random sizes
@@ -169,7 +169,7 @@
     const posArr = particlesGeo.attributes.position.array;
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
-      posArr[i3]     += velocities[i3];
+      posArr[i3] += velocities[i3];
       posArr[i3 + 1] += velocities[i3 + 1];
       posArr[i3 + 2] += velocities[i3 + 2];
 
