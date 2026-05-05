@@ -39,28 +39,28 @@ graph TD
     classDef cache fill:#c53030,stroke:#9b2c2c,stroke-width:2px,color:#fff
     classDef external fill:#4a5568,stroke:#2d3748,stroke-width:2px,color:#fff
 
-    User((👤 Client)):::client
+    User(("👤 Client")):::client
 
-    subgraph GitaVerse Backend
-        Express[🟢 Node.js + Express]:::server
-        DiskCache[(💾 Disk LRU Cache)]:::cache
-        MemCache[(🧠 Memory Cache)]:::cache
+    subgraph backend ["GitaVerse Backend"]
+        Express["🟢 Node.js + Express"]:::server
+        DiskCache[("💾 Disk LRU Cache")]:::cache
+        MemCache[("🧠 Memory Cache")]:::cache
     end
 
-    subgraph External APIs
-        Vedic[📜 Vedic Scriptures API]:::external
-        ElevenLabs[🗣️ ElevenLabs TTS]:::external
-        Claude[🧠 Anthropic Claude]:::external
-        GoogleTTS[🌐 Google TTS]:::external
+    subgraph external_apis ["External APIs"]
+        Vedic["📜 Vedic Scriptures API"]:::external
+        ElevenLabs["🗣️ ElevenLabs TTS"]:::external
+        Claude["🧠 Anthropic Claude"]:::external
+        GoogleTTS["🌐 Google TTS"]:::external
     end
 
-    User -->|API / Navigation Requests| Express
-    Express -->|Check| MemCache
-    Express -->|Check| DiskCache
-    Express -->|Fetch Verses (Batched)| Vedic
-    Express -->|Chat Context| Claude
-    Express -->|Generate Audio| ElevenLabs
-    ElevenLabs -.->|Fallback| GoogleTTS
+    User -->|"API / Navigation Requests"| Express
+    Express -->|"Check"| MemCache
+    Express -->|"Check"| DiskCache
+    Express -->|"Fetch Verses (Batched)"| Vedic
+    Express -->|"Chat Context"| Claude
+    Express -->|"Generate Audio"| ElevenLabs
+    ElevenLabs -.->|"Fallback"| GoogleTTS
     
     DiskCache --> Express
     MemCache --> Express
