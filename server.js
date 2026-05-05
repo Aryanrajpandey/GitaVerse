@@ -14,9 +14,7 @@
     const val = line.slice(eqIdx + 1).trim().replace(/\s+#.*$/, '').trim();
     if (key && val) {
       process.env[key] = val;
-      // Also map GV_ prefix to standard name if not set
       if (key === 'GV_ELEVENLABS_API_KEY') process.env.ELEVENLABS_API_KEY = val;
-      if (key === 'GV_ANTHROPIC_API_KEY') process.env.ANTHROPIC_API_KEY = val;
     }
   }
 })();
@@ -425,7 +423,7 @@ app.post('/api/generate-audio', async (req, res) => {
 
 // ============================================================
 // SAARATHI AI — POST /api/saarathi
-// Proxies Anthropic Claude. Returns structured JSON.
+// Simulated local response for demo mode.
 // ============================================================
 app.post('/api/saarathi', async (req, res) => {
   const { question, verseContext, history } = req.body || {};
@@ -433,73 +431,12 @@ app.post('/api/saarathi', async (req, res) => {
     return res.status(400).json({ error: 'question is required and must be under 2000 characters.' });
   }
 
-  const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-  if (!ANTHROPIC_API_KEY) {
-    // Graceful degradation: return a simulated structured response
-    return res.json({
-      explanation: 'The Gita teaches that action performed without attachment to its fruits is the highest form of duty. This principle, Nishkama Karma, is the heart of Chapter 3.',
-      application: 'When facing a difficult decision today, focus on what the right action is — not what you will gain from it.',
-      relatedVerse: { chapter: 3, verse: 19, reason: 'Krishna explains the practice of desireless action directly.' }
-    });
-  }
-
-  const systemPrompt = `You are Saarathi, a wise guide rooted in the Bhagavad Gita. Answer with warmth, clarity, and practical wisdom. Structure every response as JSON: { "explanation": "simple 2-3 sentence explanation", "application": "1 real-life practical application", "relatedVerse": { "chapter": N, "verse": N, "reason": "brief reason" } | null }. Never preach. Speak like a thoughtful elder, not a lecture.`;
-
-  let userMessage = question;
-  if (verseContext) {
-    userMessage = `I'm reading Chapter ${verseContext.chapter}, Verse ${verseContext.verse}.\nSanskrit: ${verseContext.sanskrit || ''}\nTranslation: ${verseContext.translation || ''}\n\nMy question: ${question}`;
-  }
-
-  const messages = [];
-  if (Array.isArray(history)) {
-    history.slice(-6).forEach(m => {
-      if (m.role && m.content) messages.push({ role: m.role, content: m.content });
-    });
-  }
-  messages.push({ role: 'user', content: userMessage });
-
-  try {
-    const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type':      'application/json',
-        'x-api-key':         ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model:      'claude-sonnet-4-20250514',
-        max_tokens: 800,
-        system:     systemPrompt,
-        messages,
-      }),
-    });
-
-    if (!anthropicRes.ok) {
-      const errText = await anthropicRes.text().catch(() => '');
-      console.error(`[Saarathi] Anthropic error ${anthropicRes.status}: ${errText}`);
-      return res.status(502).json({ error: 'AI service temporarily unavailable.' });
-    }
-
-    const data = await anthropicRes.json();
-    const rawText = data.content?.map(b => b.type === 'text' ? b.text : '').filter(Boolean).join('\n') || '';
-
-    // Parse JSON response from Claude
-    let parsed;
-    try {
-      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-      parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
-    } catch (_) { parsed = null; }
-
-    if (!parsed || !parsed.explanation) {
-      // Fallback: wrap raw text in structure
-      parsed = { explanation: rawText, application: '', relatedVerse: null };
-    }
-
-    res.json(parsed);
-  } catch (err) {
-    console.error('[Saarathi] Request error:', err.message);
-    res.status(502).json({ error: 'Connection error. Please try again.' });
-  }
+  // Simulated structured response
+  return res.json({
+    explanation: 'The Gita teaches that action performed without attachment to its fruits is the highest form of duty. This principle, Nishkama Karma, is the heart of Chapter 3.',
+    application: 'When facing a difficult decision today, focus on what the right action is — not what you will gain from it.',
+    relatedVerse: { chapter: 3, verse: 19, reason: 'Krishna explains the practice of desireless action directly.' }
+  });
 });
 
 // ============================================================
@@ -543,7 +480,7 @@ app.listen(PORT, () => {
   ║                                          ║
   ║   Local:  http://localhost:${PORT}          ║
   ║   ElevenLabs: ${process.env.ELEVENLABS_API_KEY ? '✓ Configured' : '○ Not set (using Google TTS)'}
-  ║   Anthropic:  ${process.env.ANTHROPIC_API_KEY  ? '✓ Configured' : '○ Not set (using simulation)'}
+  ║   Saarathi:   ○ Simulated (Local Demo Mode)
   ║                                          ║
   ╚══════════════════════════════════════════╝
   `);

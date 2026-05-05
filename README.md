@@ -24,7 +24,7 @@
 
 - 🌌 **Cinematic Experience**: Immersive Three.js dynamic backgrounds and GSAP scroll animations.
 - 📖 **Complete 700 Verses Library**: Fast, virtualized browsing of all 18 chapters with Sanskrit, transliteration, and 15+ commentaries.
-- 🤖 **Saarathi AI Companion**: Context-aware AI chatbot built to guide you through the philosophy of the Gita (Powered by Anthropic Claude).
+- 🤖 **Saarathi AI Companion**: Context-aware AI chatbot built to guide you through the philosophy of the Gita.
 - 🎧 **Native-Quality Audio**: Listen to Sanskrit chants natively via Web Speech API or High-Quality TTS (ElevenLabs/Google).
 - ⚡ **Production-Grade Performance**: Custom LRU caching, response chunking, gzip compression, and instantaneous SPA navigation.
 
@@ -50,7 +50,6 @@ graph TD
     subgraph External [External APIs]
         Vedic[Vedic Scriptures API]:::external
         ElevenLabs[ElevenLabs TTS]:::external
-        Claude[Anthropic Claude]:::external
         GoogleTTS[Google TTS]:::external
     end
 
@@ -58,7 +57,6 @@ graph TD
     Express -->|Check| MemCache
     Express -->|Check| DiskCache
     Express -->|Fetch Verses Batched| Vedic
-    Express -->|Chat Context| Claude
     Express -->|Generate Audio| ElevenLabs
     ElevenLabs -.->|Fallback| GoogleTTS
     
@@ -84,7 +82,7 @@ npm install
 
 # 3. Configure environment (Optional: For AI & HQ TTS)
 cp .env.example .env
-# Edit .env with your ANTHROPIC_API_KEY and ELEVENLABS_API_KEY
+# Edit .env with your ELEVENLABS_API_KEY
 
 # 4. Start the server
 npm run dev
