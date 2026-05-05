@@ -10,6 +10,10 @@
     A full-stack Bhagavad Gita learning platform engineered for absolute performance, featuring cinematic visuals, deep interactive verse exploration, and an AI spiritual companion.
   </p>
 
+  <h3>🚀 <a href="https://gitaverse-tawny.vercel.app">Experience the Live Demo Here</a> 🌟</h3>
+
+  <br />
+
   <div>
     <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
     <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
