@@ -32,7 +32,7 @@ const PORT = process.env.PORT || 3000;
 // ============================================================
 // AUDIO CACHE DIRECTORY
 // ============================================================
-const AUDIO_CACHE_DIR = path.join(__dirname, 'audio-cache');
+const AUDIO_CACHE_DIR = process.env.VERCEL ? '/tmp/audio-cache' : path.join(__dirname, 'audio-cache');
 if (!fs.existsSync(AUDIO_CACHE_DIR)) fs.mkdirSync(AUDIO_CACHE_DIR, { recursive: true });
 
 // ============================================================
@@ -93,7 +93,9 @@ function setCache(key, data) {
 // ============================================================
 // DATA MANAGEMENT — Production-Grade LRU Persistence
 // ============================================================
-const PERSISTENT_CACHE_FILE = path.join(__dirname, 'data', 'verses_cache.json');
+const PERSISTENT_CACHE_FILE = process.env.VERCEL 
+  ? path.join('/tmp', 'verses_cache.json')
+  : path.join(__dirname, 'data', 'verses_cache.json');
 const MAX_CACHE_ITEMS = 5000; // Prevent memory bloat
 let persistentCache = {};
 let cacheKeys = []; // Track insertion order for LRU
@@ -101,7 +103,8 @@ let isSaving = false;
 
 // Load persistent cache on startup
 try {
-  if (!fs.existsSync(path.join(__dirname, 'data'))) fs.mkdirSync(path.join(__dirname, 'data'));
+  const cacheDir = process.env.VERCEL ? '/tmp' : path.join(__dirname, 'data');
+  if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
   if (fs.existsSync(PERSISTENT_CACHE_FILE)) {
     persistentCache = JSON.parse(fs.readFileSync(PERSISTENT_CACHE_FILE, 'utf8'));
     cacheKeys = Object.keys(persistentCache);
@@ -470,10 +473,13 @@ app.get('/verses', (req, res) => {
 });
 
 // ============================================================
-// START SERVER
+// START SERVER OR EXPORT FOR VERCEL
 // ============================================================
-app.listen(PORT, () => {
-  console.log(`
+if (process.env.VERCEL) {
+  module.exports = app;
+} else {
+  app.listen(PORT, () => {
+    console.log(`
   ╔══════════════════════════════════════════╗
   ║                                          ║
   ║   ✦  GitaVerse Server Running  ✦         ║
@@ -484,4 +490,5 @@ app.listen(PORT, () => {
   ║                                          ║
   ╚══════════════════════════════════════════╝
   `);
-});
+  });
+}
