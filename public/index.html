@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitaVerse — Ancient Wisdom. Modern Clarity.</title>
+  <meta name="description" content="Experience the Bhagavad Gita like never before. Cinematic visuals, audio chanting, and word-by-word meaning for every shloka." />
+  <meta name="theme-color" content="#080810" />
+
+
+  <!-- DNS prefetch & preconnect for fonts -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Non-blocking font load: loads as print then switches to all -->
+  <link
+    rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,600&family=Inter+Tight:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,600&family=Inter+Tight:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'"
+  />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,600&family=Inter+Tight:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  </noscript>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- View transition overlay -->
+  <div id="page-loader" class="page-loader"></div>
+
+  <!-- Persistent Background & Cursor -->
+  <div class="custom-cursor" id="custom-cursor"></div>
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <canvas id="cinematic-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+
+  <div id="view-container" class="view-transition-container">
+
+  <!-- ============================================================
+       NAVBAR
+       ============================================================ -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <a href="/" class="nav-brand" aria-label="GitaVerse home">
+      <!-- Lotus SVG -->
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2C12 2 8 6 8 10c0 2.21 1.79 4 4 4s4-1.79 4-4c0-4-4-8-4-8z"/>
+        <path d="M12 14c-2.5 0-5 1.5-5 5h10c0-3.5-2.5-5-5-5z"/>
+        <path d="M5 10c0-2 1.5-4.5 3.5-6C6 5.5 4 8 4 10.5 4 12.5 5.5 14 7 14"/>
+        <path d="M19 10c0-2-1.5-4.5-3.5-6C18 5.5 20 8 20 10.5c0 2-1.5 3.5-3 3.5"/>
+      </svg>
+      <span data-i18n-key="brand_name">GitaVerse</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features" data-i18n-key="nav_learn">Learn</a></li>
+      <li><a href="#how-it-works" data-i18n-key="nav_how_it_works">How It Works</a></li>
+      <li><a href="#philosophy" data-i18n-key="nav_wisdom">Wisdom</a></li>
+      <li><a href="#faq" data-i18n-key="nav_about">About</a></li>
+    </ul>
+    <a href="/verses" class="nav-cta" data-i18n-key="nav_start_journey">Start Your Gita Journey</a>
+    <button id="lang-toggle" class="lang-toggle" title="Toggle Hindi/English">हिन्दी</button>
+    <div class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" role="button" tabindex="0">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation menu">
+    <div class="mobile-close" id="mobile-close" role="button" tabindex="0" aria-label="Close menu">✕</div>
+    <a href="#features" class="mobile-link">Learn</a>
+    <a href="#how-it-works" class="mobile-link">How It Works</a>
+    <a href="#philosophy" class="mobile-link">Wisdom</a>
+    <a href="#faq" class="mobile-link">About</a>
+    <a href="/verses" class="btn-primary" style="margin-top:1rem;">Start Your Gita Journey</a>
+  </div>
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section id="hero">
+    <div class="krishna-bg" aria-hidden="true">
+      <img src="krishna-bg.png" alt="" loading="lazy" decoding="async" />
+    </div>
+
+    <div class="hero-gradient" aria-hidden="true"></div>
+    <div class="hero-content container">
+      <div class="hero-brand" id="hero-brand" data-i18n-key="hero_brand">GitaVerse</div>
+      <div class="hero-drama" id="hero-drama1" data-i18n-key="hero_drama1">Ancient wisdom.</div>
+      <div class="hero-drama" id="hero-drama2" data-i18n-key="hero_drama2"><span class="accent" data-i18n-key="hero_drama2_accent">Modern clarity.</span></div>
+      <p class="hero-descriptor" id="hero-desc">
+        Every shloka — cinematic visuals, audio chanting, and word-by-word meaning. Built for the way you actually think.
+      </p>
+      <div class="hero-ctas" id="hero-ctas">
+        <a href="/verses" class="btn-primary" data-i18n-key="cta_start">Start Your Gita Journey →</a>
+        <a href="#features" class="btn-secondary" data-i18n-key="cta_explore">Explore Shlokas</a>
+      </div>
+    </div>
+    <div class="scroll-indicator" id="scroll-indicator">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#FAF8F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+  </section>
+  <!-- ============================================================
+       WHAT ARE YOU GOING THROUGH
+       ============================================================ -->
+  <section id="situation-map" class="section-padding" style="background:rgba(0,0,0,0.3);">
+    <div class="container">
+      <div class="section-heading">
+        <span class="label-mono">Find your verse</span>
+        <h2>What are you going through?</h2>
+      </div>
+      <div class="situation-grid" id="situation-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.75rem;margin-bottom:2rem;">
+        <button class="situation-btn" data-situation="stress"     id="sit-stress">😔 Stress &amp; Anxiety</button>
+        <button class="situation-btn" data-situation="confusion"  id="sit-confusion">🌀 Confusion &amp; Doubt</button>
+        <button class="situation-btn" data-situation="anger"      id="sit-anger">🔥 Anger &amp; Frustration</button>
+        <button class="situation-btn" data-situation="motivation" id="sit-motivation">💤 Lack of Motivation</button>
+        <button class="situation-btn" data-situation="grief"      id="sit-grief">🌧 Grief &amp; Loss</button>
+        <button class="situation-btn" data-situation="fear"       id="sit-fear">🌑 Fear &amp; Uncertainty</button>
+      </div>
+      <div id="situation-result"></div>
+    </div>
+  </section>
+  <!-- ============================================================
+       VERSE OF THE DAY
+       ============================================================ -->
+  <section class="section-padding" style="padding-top:1rem;padding-bottom:1rem;">
+    <div class="container">
+      <div id="verse-of-day"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTINUE READING (Recently Viewed)
+       ============================================================ -->
+  <section id="recently-viewed-section" class="section-padding" style="display:none;padding-top:1rem;">
+    <div class="container">
+      <div class="section-heading" style="margin-bottom:1rem;">
+        <span class="label-mono">Continue reading</span>
+        <h2 style="font-size:1.4rem;">Pick up where you left off</h2>
+      </div>
+      <div id="recently-viewed-list" style="display:flex;flex-wrap:wrap;gap:0.5rem;"></div>
+    </div>
+  </section>
+
+
+  <section id="features" class="section-padding">
+    <div class="container">
+      <div class="section-heading">
+        <span class="label-mono">What you get</span>
+        <h2>A new way to read the Gita</h2>
+      </div>
+
+      <div class="features-grid">
+        <!-- Card 1: Diagnostic Shuffler -->
+        <div class="feature-card" id="feature-card-1">
+          <div class="feature-label">01 — Experience</div>
+          <div class="feature-title">Cinematic Shloka Experience</div>
+          <div class="feature-desc">Each verse is a world. Visual context, audio authenticity, and interactive meaning — all in one place.</div>
+          <div class="shuffler" id="shuffler">
+            <div class="shuffler-row">
+              <span class="shuffler-text">Chapter 2, Verse 47</span>
+              <span class="shuffler-text">"Karma Yoga"</span>
+              <span class="shuffler-pill">◆ Audio Ready</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Typewriter -->
+        <div class="feature-card" id="feature-card-2">
+          <div class="feature-label">02 — Clarity</div>
+          <div class="feature-title">Word-by-Word Understanding</div>
+          <div class="feature-desc">Sanskrit becomes clear. Every word decoded in plain, modern language.</div>
+          <div class="typewriter-container">
+            <div class="typewriter-live"><span class="pulse-dot"></span> LIVE</div>
+            <div class="typewriter-text" id="typewriter-text"><span class="typewriter-cursor">|</span></div>
+          </div>
+        </div>
+
+        <!-- Card 3: SVG Graph -->
+        <div class="feature-card" id="feature-card-3">
+          <div class="feature-label">03 — Retention</div>
+          <div class="feature-title">Retention-Focused Design</div>
+          <div class="feature-desc">Designed so understanding compounds. The more you read, the more stays.</div>
+          <div class="graph-container" id="graph-container">
+            <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg" id="retention-graph">
+              <!-- Grid lines -->
+              <line x1="40" y1="20" x2="40" y2="150" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+              <line x1="40" y1="150" x2="280" y2="150" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+              <line x1="40" y1="117.5" x2="280" y2="117.5" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+              <line x1="40" y1="85" x2="280" y2="85" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+              <line x1="40" y1="52.5" x2="280" y2="52.5" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+              <line x1="40" y1="20" x2="280" y2="20" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+              <!-- Y-axis labels -->
+              <text x="32" y="153" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="end">0%</text>
+              <text x="32" y="120" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="end">25%</text>
+              <text x="32" y="88" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="end">50%</text>
+              <text x="32" y="55" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="end">75%</text>
+              <text x="32" y="23" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="end">100%</text>
+              <!-- X-axis labels -->
+              <text x="74" y="166" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="middle">1</text>
+              <text x="108" y="166" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="middle">2</text>
+              <text x="142" y="166" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="middle">3</text>
+              <text x="176" y="166" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="middle">4</text>
+              <text x="210" y="166" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="middle">5</text>
+              <text x="244" y="166" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="middle">6</text>
+              <text x="278" y="166" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8FA8" text-anchor="middle">7</text>
+              <!-- X-axis title -->
+              <text x="160" y="178" font-family="JetBrains Mono, monospace" font-size="7" fill="#8B8FA8" text-anchor="middle">Sessions</text>
+              <!-- Line path -->
+              <polyline id="graph-line"
+                fill="none"
+                stroke="#C9A84C"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                points="74,134.4 108,105.8 142,82.4 176,68.1 210,53.8 244,42.1 278,31.7"
+              />
+              <!-- Data points -->
+              <circle class="graph-point" cx="74" cy="134.4" r="4" fill="#C9A84C" data-session="1" data-value="12"/>
+              <circle class="graph-point" cx="108" cy="105.8" r="4" fill="#C9A84C" data-session="2" data-value="34"/>
+              <circle class="graph-point" cx="142" cy="82.4" r="4" fill="#C9A84C" data-session="3" data-value="52"/>
+              <circle class="graph-point" cx="176" cy="68.1" r="4" fill="#C9A84C" data-session="4" data-value="63"/>
+              <circle class="graph-point" cx="210" cy="53.8" r="4" fill="#C9A84C" data-session="5" data-value="74"/>
+              <circle class="graph-point" cx="244" cy="42.1" r="4" fill="#C9A84C" data-session="6" data-value="83"/>
+              <circle class="graph-point" cx="278" cy="31.7" r="4" fill="#C9A84C" data-session="7" data-value="91"/>
+            </svg>
+            <div class="graph-tooltip" id="graph-tooltip"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       HOW IT WORKS
+       ============================================================ -->
+  <section id="how-it-works" class="section-padding">
+    <div class="container">
+      <div class="section-heading">
+        <span class="label-mono">The path</span>
+        <h2>How it works</h2>
+      </div>
+
+      <div class="steps-grid">
+        <svg class="steps-line" id="steps-line" viewBox="0 0 900 4" preserveAspectRatio="none">
+          <line x1="0" y1="2" x2="900" y2="2" stroke="#C9A84C" stroke-width="1" stroke-dasharray="6 4" id="steps-dash"/>
+        </svg>
+
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <h3 class="step-title">Choose Your Shloka</h3>
+          <p class="step-desc">Open any of the 700 shlokas. Each one begins with the full Sanskrit verse — read or listen to it first, without explanation.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <h3 class="step-title">See It Come Alive</h3>
+          <p class="step-desc">Cinematic visuals open the context. You'll see the battlefield, the moment, the emotion — before a single word is explained.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <h3 class="step-title">Understand, Not Memorize</h3>
+          <p class="step-desc">Word-by-word breakdown in plain language. No jargon. No Sanskrit degree required.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PHILOSOPHY
+       ============================================================ -->
+  <section id="philosophy" class="section-padding">
+    <div class="philosophy-bg" id="philosophy-bg" aria-hidden="true"></div>
+    <div class="container">
+      <div class="philosophy-content">
+        <p class="phil-muted">Most Gita resources focus on:</p>
+        <div class="phil-statements">
+          <p>Dense Sanskrit commentaries written for scholars.</p>
+          <p>Motivational retellings that lose the original meaning.</p>
+          <p>Audio lectures that tell you what to think.</p>
+        </div>
+        <div class="phil-pivot">
+          <span class="label-mono">GitaVerse focuses on:</span>
+        </div>
+        <div class="phil-manifesto" id="phil-manifesto">
+          <span class="word">Understanding </span><span class="word">before</span>
+          <br/>
+          <span class="word accent">belief.</span>
+        </div>
+        <p class="phil-sub">You don't need to agree with the Gita. You need to encounter it — directly, beautifully, on your own terms.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       STATS
+       ============================================================ -->
+  <section id="stats" class="section-padding">
+    <div class="container">
+      <div class="stats-panel" id="stats-panel">
+        <div class="stat-item">
+          <div class="stat-sublabel">Total Verses</div>
+          <div class="stat-number" data-target="700" data-suffix="+">0</div>
+          <div class="stat-label">Shlokas</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-sublabel">Complete</div>
+          <div class="stat-number" data-target="18" data-suffix="">0</div>
+          <div class="stat-label">Chapters</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-sublabel">First-time clarity</div>
+          <div class="stat-number" data-target="94" data-suffix="%">0</div>
+          <div class="stat-label">Report clarity</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-sublabel">Avg. time</div>
+          <div class="stat-number" data-target="3" data-suffix=" min">0</div>
+          <div class="stat-label">Per shloka</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TESTIMONIALS
+       ============================================================ -->
+  <section id="testimonials" class="section-padding">
+    <div class="container">
+      <div class="section-heading">
+        <span class="label-mono">Voices</span>
+        <h2>What readers say</h2>
+      </div>
+
+      <div class="testimonials-wrapper">
+        <div class="testimonial-quote-mark" aria-hidden="true">"</div>
+
+        <div class="testimonial-slide active" data-index="0">
+          <p class="testimonial-text">"I've tried reading the Gita three times in 10 years. GitaVerse is the first time I actually stayed."</p>
+          <div class="testimonial-author">Rohan Mehta</div>
+          <div class="testimonial-role">Product Designer, Bangalore</div>
+        </div>
+
+        <div class="testimonial-slide" data-index="1">
+          <p class="testimonial-text">"The audio chanting before each explanation changes everything. You feel it before you understand it. That's the right order."</p>
+          <div class="testimonial-author">Priya Nair</div>
+          <div class="testimonial-role">Graduate Student, IIT Delhi</div>
+        </div>
+
+        <div class="testimonial-slide" data-index="2">
+          <p class="testimonial-text">"I'm not religious. But this isn't religious. It's just clear thinking, beautifully presented."</p>
+          <div class="testimonial-author">Arjun Pillai</div>
+          <div class="testimonial-role">Software Engineer, Pune</div>
+        </div>
+
+        <div class="testimonial-nav">
+          <button class="testimonial-arrow" id="test-prev" aria-label="Previous testimonial">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="testimonial-dots">
+            <span class="testimonial-dot active" data-index="0"></span>
+            <span class="testimonial-dot" data-index="1"></span>
+            <span class="testimonial-dot" data-index="2"></span>
+          </div>
+          <button class="testimonial-arrow" id="test-next" aria-label="Next testimonial">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FAQ
+       ============================================================ -->
+  <section id="faq" class="section-padding">
+
+    <div class="container">
+      <div class="section-heading">
+        <span class="label-mono">Questions</span>
+        <h2>Honest answers</h2>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Do I need to know Sanskrit to use GitaVerse?</span>
+            <div class="faq-icon">+</div>
+          </button>
+          <div class="faq-answer"><div class="faq-answer-inner">Not at all. Every shloka is broken down word by word in plain English. The Sanskrit is there for you to hear and see — it's not a barrier. It's part of the experience.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Is this a religious platform?</span>
+            <div class="faq-icon">+</div>
+          </button>
+          <div class="faq-answer"><div class="faq-answer-inner">No. GitaVerse doesn't ask you to believe anything. The Bhagavad Gita is a philosophical text. We present it that way — open, direct, and without interpretation imposed on you.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>How is this different from just reading a translation?</span>
+            <div class="faq-icon">+</div>
+          </button>
+          <div class="faq-answer"><div class="faq-answer-inner">A translation gives you words. GitaVerse gives you the context — the battlefield, the emotion, the moment Krishna speaks. Then the words. Then the meaning. That sequence changes everything.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Can I use this if I've never read the Gita before?</span>
+            <div class="faq-icon">+</div>
+          </button>
+          <div class="faq-answer"><div class="faq-answer-inner">Especially if you haven't. You don't need prior knowledge. You need curiosity. That's enough.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Is there a free version?</span>
+            <div class="faq-icon">+</div>
+          </button>
+          <div class="faq-answer"><div class="faq-answer-inner">Yes. A meaningful portion of the Gita is free — enough to know if this way of learning works for you. Full access is available with a subscription.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Is the audio pronunciation accurate?</span>
+            <div class="faq-icon">+</div>
+          </button>
+          <div class="faq-answer"><div class="faq-answer-inner">Yes. Chanting recordings are from trained practitioners. We believe how a shloka sounds is as important as what it says.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FINAL CTA
+       ============================================================ -->
+  <section id="final-cta">
+    <div class="cta-krishna-bg" aria-hidden="true">
+      <img src="krishna-bg.png" alt="" loading="lazy" decoding="async" />
+    </div>
+    <div class="container">
+      <div class="cta-label">Begin. Any time.</div>
+      <h2 class="cta-headline">Seven hundred shlokas.<br/>One question that matters.</h2>
+      <p class="cta-sub">Who are you, and what should you do? The Gita has been asking this for 5,000 years.</p>
+      <a href="/verses" class="btn-dark">Start Your Gita Journey</a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer id="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-name">GitaVerse</div>
+        <div class="footer-brand-sub">Ancient wisdom. Modern clarity.</div>
+      </div>
+      <div class="footer-nav-cols">
+        <div class="footer-nav-col">
+          <a href="#features">Learn</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="/verses">All Chapters</a>
+          <a href="/verses">Start Here</a>
+        </div>
+        <div class="footer-nav-col">
+          <a href="#faq">About</a>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+      <div class="footer-system">
+        <div class="system-indicator">
+          <span class="system-dot"></span>
+          <span class="system-label">All systems active</span>
+        </div>
+        <div class="social-icons">
+          <!-- Twitter/X -->
+          <a href="#" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <!-- Instagram -->
+          <a href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 GitaVerse. Built with care.</span>
+      <span>Made in India 🇮🇳</span>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       SAARATHI CHATBOT
+       ============================================================ -->
+  <button id="saarathi-fab" aria-label="Open Saarathi chatbot">✦ Ask Saarathi</button>
+
+  <div id="chat-window" role="dialog" aria-label="Saarathi — Gita Guide" aria-modal="true">
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C12 2 8 6 8 10c0 2.21 1.79 4 4 4s4-1.79 4-4c0-4-4-8-4-8z"/>
+          <path d="M12 14c-2.5 0-5 1.5-5 5h10c0-3.5-2.5-5-5-5z"/>
+          <path d="M5 10c0-2 1.5-4.5 3.5-6C6 5.5 4 8 4 10.5 4 12.5 5.5 14 7 14"/>
+          <path d="M19 10c0-2-1.5-4.5-3.5-6C18 5.5 20 8 20 10.5c0 2-1.5 3.5-3 3.5"/>
+        </svg>
+        <div class="chat-header-info">
+          <span class="chat-header-name">Saarathi</span>
+          <span class="chat-header-status"><span class="online-dot"></span> Online</span>
+        </div>
+      </div>
+      <div class="chat-header-actions">
+        <button class="chat-clear-btn" id="chat-clear" aria-label="Clear conversation">Clear conversation</button>
+        <button class="chat-close-btn" id="chat-close" aria-label="Close chatbot">✕</button>
+      </div>
+    </div>
+
+    <div class="chat-suggestions" id="chat-suggestions">
+      <button class="suggestion-pill">What is the main message of the Gita?</button>
+      <button class="suggestion-pill">How do I deal with anxiety, according to Krishna?</button>
+      <button class="suggestion-pill">What does karma really mean?</button>
+      <button class="suggestion-pill">Who is Arjuna and why is he confused?</button>
+      <button class="suggestion-pill">What is the difference between dharma and karma?</button>
+      <button class="suggestion-pill">How should I decide what to do with my life?</button>
+    </div>
+
+    <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-atomic="false"></div>
+
+    <div class="chat-input-bar">
+      <input type="text" class="chat-input" id="chat-input" placeholder="Ask about the Gita..." aria-label="Message Saarathi" />
+      <button class="chat-send-btn" id="chat-send" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#080810" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="custom-cursor"></div>
+
+  <!-- Scripts: deferred so they don't block page render -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="cinematic.js" defer></script>
+  <script src="loader.js" defer></script>
+  <script src="script.js?v=1.0.1" defer></script>
+  <script src="navHandler.js?v=1.0.1" type="module"></script>
+</body>
+</html>

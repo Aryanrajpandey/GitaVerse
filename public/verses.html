@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitaVerse — All Chapters &amp; Verses</title>
+  <meta name="description" content="Explore all 700 shlokas of the Bhagavad Gita with Sanskrit text, transliteration, and English translations across 18 chapters." />
+  <meta name="theme-color" content="#080810" />
+
+  <!-- DNS prefetch &amp; preconnect for fonts -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Non-blocking font load -->
+  <link
+    rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,300;1,400;1,600&family=Inter+Tight:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,300;1,400;1,600&family=Inter+Tight:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'"
+  />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,300;1,400;1,600&family=Inter+Tight:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet" />
+  </noscript>
+
+  <link rel="stylesheet" href="verses.css" />
+</head>
+<body>
+  <!-- View transition overlay -->
+  <div id="page-loader" class="page-loader"></div>
+
+  <!-- Persistent Background & Cursor (in case of direct load) -->
+  <div class="custom-cursor" id="custom-cursor"></div>
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <canvas id="cinematic-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+
+  <div id="view-container" class="view-transition-container">
+
+  <!-- ============================================================
+       NAVBAR
+       ============================================================ -->
+  <nav id="navbar" class="scrolled" role="navigation" aria-label="Main navigation">
+    <a href="/" class="nav-brand" aria-label="GitaVerse home">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2C12 2 8 6 8 10c0 2.21 1.79 4 4 4s4-1.79 4-4c0-4-4-8-4-8z"/>
+        <path d="M12 14c-2.5 0-5 1.5-5 5h10c0-3.5-2.5-5-5-5z"/>
+        <path d="M5 10c0-2 1.5-4.5 3.5-6C6 5.5 4 8 4 10.5 4 12.5 5.5 14 7 14"/>
+        <path d="M19 10c0-2-1.5-4.5-3.5-6C18 5.5 20 8 20 10.5c0 2-1.5 3.5-3 3.5"/>
+      </svg>
+      GitaVerse
+    </a>
+    <div class="nav-right">
+      <!-- Streak badge -->
+      <span id="streak-badge" style="display:none; align-items:center; font-size:0.78rem; color:var(--champagne); font-family:var(--font-mono); white-space:nowrap;"></span>
+
+      <!-- Bookmarks filter -->
+      <button id="bookmarks-filter" class="playback-toggle-btn" title="Filter bookmarked verses" aria-label="Toggle bookmarks">☆ Bookmarks</button>
+
+      <!-- Auto-play next -->
+      <button id="autoplay-toggle" class="playback-toggle-btn" title="Auto-play next verse" aria-label="Toggle auto-play next">↪ Auto</button>
+
+      <!-- Repeat -->
+      <button id="repeat-toggle" class="playback-toggle-btn" title="Repeat current verse" aria-label="Toggle repeat">⟳ Repeat</button>
+
+      <!-- Meditation mode -->
+      <button id="meditation-toggle" title="Toggle Meditation Focus Mode" aria-label="Toggle meditation mode">🧘 Focus</button>
+
+      <a href="/" class="nav-back">← Back</a>
+
+      <div class="chapter-dropdown-wrapper">
+        <button class="chapter-dropdown-btn" id="chapter-dropdown-btn">
+          <span id="dropdown-label">Select Chapter</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="chapter-dropdown" id="chapter-dropdown"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       MAIN LAYOUT
+       ============================================================ -->
+  <main class="verses-layout">
+    <!-- Sidebar: Chapter List -->
+    <aside class="chapter-sidebar" id="chapter-sidebar">
+      <div class="sidebar-header">
+        <h2 class="sidebar-title">Chapters</h2>
+        <span class="sidebar-subtitle">18 Adhyāya · 700 Shlokas</span>
+      </div>
+      <div class="chapter-list" id="chapter-list">
+        <div class="loading-state" id="chapters-loading">
+          <div class="loading-spinner"></div>
+          <span>Loading chapters...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Content: Verses -->
+    <section class="verses-content" id="verses-content">
+      <!-- Welcome state (no chapter selected) -->
+      <div class="welcome-state" id="welcome-state">
+        <div class="welcome-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C12 2 8 6 8 10c0 2.21 1.79 4 4 4s4-1.79 4-4c0-4-4-8-4-8z"/>
+            <path d="M12 14c-2.5 0-5 1.5-5 5h10c0-3.5-2.5-5-5-5z"/>
+            <path d="M5 10c0-2 1.5-4.5 3.5-6C6 5.5 4 8 4 10.5 4 12.5 5.5 14 7 14"/>
+            <path d="M19 10c0-2-1.5-4.5-3.5-6C18 5.5 20 8 20 10.5c0 2-1.5 3.5-3 3.5"/>
+          </svg>
+        </div>
+        <h1 class="welcome-title">The Bhagavad Gita</h1>
+        <p class="welcome-desc">700 verses of timeless philosophy, organized across 18 chapters. Select a chapter from the sidebar to begin your journey.</p>
+        <div class="welcome-stats">
+          <div class="welcome-stat">
+            <span class="welcome-stat-number">18</span>
+            <span class="welcome-stat-label">Chapters</span>
+          </div>
+          <div class="welcome-stat">
+            <span class="welcome-stat-number">700</span>
+            <span class="welcome-stat-label">Verses</span>
+          </div>
+          <div class="welcome-stat">
+            <span class="welcome-stat-number">15+</span>
+            <span class="welcome-stat-label">Commentaries</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chapter header (shown when a chapter is selected) -->
+      <div class="chapter-header" id="chapter-header" style="display:none;">
+        <div class="chapter-meta">
+          <span class="chapter-number-badge" id="ch-number-badge"></span>
+          <span class="chapter-verse-count" id="ch-verse-count"></span>
+        </div>
+        <h1 class="chapter-title" id="ch-title"></h1>
+        <p class="chapter-title-en" id="ch-title-en"></p>
+        <p class="chapter-summary" id="ch-summary"></p>
+      </div>
+
+      <!-- Verses list -->
+      <div class="verses-list" id="verses-list"></div>
+
+      <!-- Loading state for verses -->
+      <div class="verses-loading" id="verses-loading" style="display:none;">
+        <div class="loading-spinner large"></div>
+        <span>Loading verses...</span>
+      </div>
+
+      <!-- Error state -->
+      <div class="error-state" id="error-state" style="display:none;">
+        <div class="error-icon">⚠</div>
+        <h3>Could not load content</h3>
+        <p id="error-message">Something went wrong. Please try again.</p>
+        <button class="retry-btn" id="retry-btn">Try Again</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Three.js + GSAP are already in the shell index.html, but kept for direct load stability -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <script src="cinematic.js"></script>
+  <script src="loader.js"></script>
+
+  <script src="navHandler.js" type="module"></script>
+</body>
+</html>

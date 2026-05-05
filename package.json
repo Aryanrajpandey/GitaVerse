@@ -1,0 +1,23 @@
+{
+  "name": "gitaverse",
+  "version": "1.0.0",
+  "description": "GitaVerse — Ancient Wisdom. Modern Clarity. A full-stack Bhagavad Gita learning platform.",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "bhagavad-gita",
+    "gita",
+    "vedic",
+    "philosophy",
+    "learning"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^4.21.0"
+  }
+}
